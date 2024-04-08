@@ -1,0 +1,15 @@
+{
+  "name": "restaurant-web-app-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Madhushani-29/Restaurant-Web-App-Backend.git",
+  "author": "madhushani-29 <madhushani2904@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.3.0"
+  }
+}
