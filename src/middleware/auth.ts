@@ -10,8 +10,8 @@ import User from "../models/user";
 declare global {
   namespace Express {
     interface Request {
-      userId: string;
-      auth0Id: string;
+      userID: string;
+      auth0ID: string;
     }
   }
 }
@@ -45,16 +45,19 @@ export const jwtParse = async (
     const decoded = jwt.decode(token) as jwt.JwtPayload;
     //decoded is assumed to be an object representing the decoded payload of the JWT token
     //decoded.sub part accesses the sub claim within the decoded JWT payload
-    const auth0Id = decoded.sub;
+    const auth0ID = decoded.sub;
 
-    const user = await User.findOne({ auth0Id });
+    //need to send the property name as in the data base
+    //not id, ID since ID in the mongo
+    const user = await User.findOne({ auth0ID });
 
     if (!user) {
+      console.error("User not found for auth0Id:", auth0ID);
       return res.sendStatus(401);
     }
 
-    req.auth0Id = auth0Id as string;
-    req.userId = user._id.toString();
+    req.auth0ID = auth0ID as string;
+    req.userID = user._id.toString();
     next();
   } catch (error) {
     return res.sendStatus(401);

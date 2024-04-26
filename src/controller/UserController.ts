@@ -28,7 +28,7 @@ const createCurrentUser = async (req: Request, res: Response) => {
 
 const updateCurrentUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userID);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" }).send();
