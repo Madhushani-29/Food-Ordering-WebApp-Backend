@@ -1,25 +1,54 @@
 import { Request, Response } from "express";
-import User from "../models/user";
+import Restaurant from "../models/restaurant";
+import cloudinary from "cloudinary";
+import mongoose from "mongoose";
 
 const createRestaurant = async (req: Request, res: Response) => {
   try {
-    /* const { auth0ID } = req.body;
-    const existingUser = await User.findOne({ auth0ID });
+    const existingRestaurant = await Restaurant.findOne({ user: req.userID });
 
-    if (existingUser) {
-      return res.status(200).json({ message: "User already exists" }).send();
+    if (existingRestaurant) {
+      return res
+        .status(409)
+        .json({ message: "Restaurant already exists" })
+        .send();
     }
 
-    const newUser = new User(req.body);
-    await newUser.save();
-    res.status(201).json(newUser.toObject());*/
+    //get image from the request
+    //req.file is the file object
+    const imageUrl = await uploadImage(req.file as Express.Multer.File);
 
-    res.json({message:"Restaurant Created !"});
-    
+    //embaded the userID and imageURL restautant object- can use as below when use .save() method
+    //const restaurant = new Restaurant(req.body);
+    //restaurant.imageUrl = imageUrl;
+    //restaurant.user = new mongoose.Types.ObjectId(req.userID);
+
+    const restaurant = await Restaurant.create({
+      ...req.body,
+      user: req.userID,
+      imageUrl: imageUrl,
+      lastUpdated:Date()
+    });
+
+    res
+      .status(201)
+      .json({ message: "Restaurant created successfully", restaurant });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error creating user" });
+    res.status(500).json({ message: "Error creating restaurant" });
   }
+};
+
+const uploadImage = async (file: Express.Multer.File) => {
+  const image = file;
+  //convert image to base64 image
+  const base64Image = Buffer.from(image.buffer).toString("base64");
+  //mime type is a image type like png
+  const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+
+  //upload image to cloudinary
+  const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
+  return uploadResponse.url;
 };
 
 export default { createRestaurant };
