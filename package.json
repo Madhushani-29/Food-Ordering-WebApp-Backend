@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "nodemon",
     "build": "yarn && tsc",
-    "start":"node dist/index.js"
+    "start": "node dist/index.js"
   },
   "repository": "https://github.com/Madhushani-29/Restaurant-WebApp-Backend.git",
   "author": "madhushani-29 <madhushani2904@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
