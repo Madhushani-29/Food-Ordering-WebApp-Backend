@@ -1,6 +1,8 @@
 import express from "express";
 import RestaurantController from "../controller/RestaurantController";
 import multer from "multer";
+import { validateMyRestaurantRequest } from "../middleware/validation";
+import { jwtCheck, jwtParse } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -22,6 +24,9 @@ router.post(
   if there are any validations, it will send a error message to FE, 
   then it will append a image object can use in controller function' */
   upload.single("imageFile"),
+  jwtCheck,
+  jwtParse,
+  validateMyRestaurantRequest,
   RestaurantController.createRestaurant
 );
 
