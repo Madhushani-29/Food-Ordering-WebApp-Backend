@@ -1,13 +1,11 @@
 import express from "express";
-import UserController from "../controller/UserController";
+import RestaurantController from "../controller/RestaurantController";
 import { jwtCheck, jwtParse } from "../middleware/auth";
 import { validateMyUserRequest } from "../middleware/validation";
 import { Request, Response } from "express";
 
 const router = express.Router();
 
-router.post("/", async (req: Request, res: Response)=>{
-    res.json({message:"Restaurant Created !"});
-});
+router.post("/", RestaurantController.createRestaurant);
 
 export default router;
