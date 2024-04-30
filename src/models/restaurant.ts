@@ -2,12 +2,6 @@ import mongoose, { InferSchemaType } from "mongoose";
 
 //represents the structure of documents that match the menuItemSchema used in restaurant model
 const menuItemSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    //if there is no id, generate a id
-    default: () => new mongoose.Types.ObjectId(),
-  },
   name: {
     type: String,
     required: true,
