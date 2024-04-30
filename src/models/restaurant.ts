@@ -18,8 +18,6 @@ const menuItemSchema = new mongoose.Schema({
   },
 });
 
-export type MenuItemType = InferSchemaType<typeof menuItemSchema>;
-
 const restaurantSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
