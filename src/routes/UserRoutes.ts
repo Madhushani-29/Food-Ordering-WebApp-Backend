@@ -8,6 +8,7 @@ const router = express.Router();
 router.get("/", jwtCheck, jwtParse, UserController.getCurrentUser);
 
 router.post("/", jwtCheck, UserController.createCurrentUser);
+
 router.put(
   "/",
   jwtCheck,
