@@ -18,6 +18,11 @@ const upload = multer({
   },
 });
 
+router.get(
+  "/",
+  RestaurantController.getCurrentRestaurant
+);
+
 router.post(
   "/",
   /*check the body for 'imageFile property and validate it with above also and 

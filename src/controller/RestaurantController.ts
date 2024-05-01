@@ -3,6 +3,20 @@ import Restaurant from "../models/restaurant";
 import cloudinary from "cloudinary";
 import mongoose from "mongoose";
 
+const getCurrentRestaurant = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.userID });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" }).send();
+    }
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error finding the restaurant" });
+  }
+};
+
 const createRestaurant = async (req: Request, res: Response) => {
   try {
     const existingRestaurant = await Restaurant.findOne({ user: req.userID });
@@ -27,7 +41,7 @@ const createRestaurant = async (req: Request, res: Response) => {
       ...req.body,
       user: req.userID,
       imageUrl: imageUrl,
-      lastUpdated:Date()
+      lastUpdated: Date(),
     });
 
     res
@@ -51,4 +65,7 @@ const uploadImage = async (file: Express.Multer.File) => {
   return uploadResponse.url;
 };
 
-export default { createRestaurant };
+export default {
+  createRestaurant,
+  getCurrentRestaurant,
+};
