@@ -49,7 +49,7 @@ const restaurantSchema = new mongoose.Schema({
     required: true,
   },
   lastUpdated: {
-    type: String,
+    type: Date,
     required: true,
   },
 });

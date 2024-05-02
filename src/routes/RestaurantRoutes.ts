@@ -24,12 +24,21 @@ router.post(
   "/",
   /*check the body for 'imageFile property and validate it with above also and 
   if there are any validations, it will send a error message to FE, 
-  then it will append a image object can use in controller function' */
+  then it will append images to a file object can use in controller function (req.file or req.files)' */
   upload.single("imageFile"),
   jwtCheck,
   jwtParse,
   validateMyRestaurantRequest,
   RestaurantController.createRestaurant
+);
+
+router.put(
+  "/",
+  upload.single("imageFile"),
+  jwtCheck,
+  jwtParse,
+  validateMyRestaurantRequest,
+  RestaurantController.updateRestaurant
 );
 
 export default router;

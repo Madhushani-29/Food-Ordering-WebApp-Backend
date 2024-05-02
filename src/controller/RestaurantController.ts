@@ -53,6 +53,41 @@ const createRestaurant = async (req: Request, res: Response) => {
   }
 };
 
+const updateRestaurant = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.userID });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found!" }).send();
+    }
+
+    restaurant.restaurantName = req.body.restaurantName;
+    restaurant.city = req.body.city;
+    restaurant.country = req.body.country;
+    restaurant.deliveryPrice = req.body.deliveryPrice;
+    restaurant.estimatedDeliveryTime = req.body.estimatedDeliveryTime;
+    restaurant.cuisines = req.body.cuisines;
+    restaurant.menuItems = req.body.menuItems;
+    restaurant.lastUpdated = new Date();
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req.file as Express.Multer.File);
+      restaurant.imageUrl = imageUrl;
+    }
+
+    const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+      restaurant._id,
+      restaurant,
+      { new: true }
+    );
+
+    res.status(201).json(updatedRestaurant);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error updating restaurant" });
+  }
+};
+
 const uploadImage = async (file: Express.Multer.File) => {
   const image = file;
   //convert image to base64 image
@@ -68,4 +103,5 @@ const uploadImage = async (file: Express.Multer.File) => {
 export default {
   createRestaurant,
   getCurrentRestaurant,
+  updateRestaurant,
 };
