@@ -18,10 +18,7 @@ const upload = multer({
   },
 });
 
-router.get(
-  "/",
-  RestaurantController.getCurrentRestaurant
-);
+router.get("/", jwtCheck, jwtParse, RestaurantController.getCurrentRestaurant);
 
 router.post(
   "/",
