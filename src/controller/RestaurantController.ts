@@ -3,7 +3,7 @@ import Restaurant from "../models/restaurant";
 
 const searchRestaurant = async (req: Request, res: Response) => {
   try {
-    // search query come with the url
+    // path params/ search query come with the url
     // required something(main search) for the criteria like ids and search words
     // as the main search we use city
     const city = req.params.city;
