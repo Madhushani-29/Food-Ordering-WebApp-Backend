@@ -9,7 +9,11 @@ const router = express.Router();
 
 router.get(
   "/:id",
-  param("id").notEmpty().withMessage("ID is a must!"),
+  param("id")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("Restaurant ID must be a valid string!"),
   RestaurantController.getRestaurantById
 );
 
