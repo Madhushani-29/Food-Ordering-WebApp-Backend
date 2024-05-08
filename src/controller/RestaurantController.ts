@@ -1,6 +1,22 @@
 import { Request, Response } from "express";
 import Restaurant from "../models/restaurant";
 
+const getRestaurantById = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const restaurant = await Restaurant.findById(id);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" }).send();
+    }
+
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
 const searchRestaurant = async (req: Request, res: Response) => {
   try {
     // path params/ search query come with the url
@@ -91,22 +107,6 @@ const searchRestaurant = async (req: Request, res: Response) => {
     };
 
     res.json(response);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Something went wrong!" });
-  }
-};
-
-const getRestaurantById = async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const restaurant = await Restaurant.findById(id);
-
-    if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" }).send();
-    }
-
-    res.status(200).json(restaurant);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!" });
