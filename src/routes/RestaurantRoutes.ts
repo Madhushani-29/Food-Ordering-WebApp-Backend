@@ -8,6 +8,12 @@ import { param } from "express-validator";
 const router = express.Router();
 
 router.get(
+  "/:id",
+  param("id").notEmpty().withMessage("ID is a must!"),
+  RestaurantController.getRestaurantById
+);
+
+router.get(
   "/search/:city",
   //validate city param=>must be a valid string and not empty
   param("city")

@@ -97,6 +97,23 @@ const searchRestaurant = async (req: Request, res: Response) => {
   }
 };
 
+const getRestaurantById = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const restaurant = await Restaurant.findById(id);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" }).send();
+    }
+
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
 export default {
   searchRestaurant,
+  getRestaurantById,
 };
