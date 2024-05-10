@@ -6,6 +6,7 @@ import UserRoutes from "./routes/UserRoutes";
 import MyRestaurantRoutes from "./routes/MyRestaurantRoutes";
 import { v2 as cloudinary } from "cloudinary";
 import RestaurantRoutes from "./routes/RestaurantRoutes";
+import OrderRoutes from "./routes/OrderRoutes";
 
 //create app
 const app = express();
@@ -31,6 +32,7 @@ app.get("/health", async (req: Request, res: Response) => {
 app.use("/api/my/user", UserRoutes);
 app.use("/api/my/restaurant", MyRestaurantRoutes);
 app.use("/api/restaurant", RestaurantRoutes);
+app.use("/api/order", OrderRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
