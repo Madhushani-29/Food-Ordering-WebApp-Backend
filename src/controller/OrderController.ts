@@ -6,6 +6,14 @@ import Order from "../models/order";
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
+const stripeWebhookHandler = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error finding the user" });
+  }
+};
+
 type CheckoutSessionRequest = {
   //array of cart items indicate by []
   cartItems: {
@@ -135,4 +143,5 @@ const createSession = async (
 
 export default {
   createCheckoutSession,
+  stripeWebhookHandler,
 };
