@@ -8,6 +8,16 @@ import { param } from "express-validator";
 const router = express.Router();
 
 router.get(
+  "/:id",
+  param("id")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("Restaurant ID must be a valid string!"),
+  RestaurantController.getRestaurantById
+);
+
+router.get(
   "/search/:city",
   //validate city param=>must be a valid string and not empty
   param("city")

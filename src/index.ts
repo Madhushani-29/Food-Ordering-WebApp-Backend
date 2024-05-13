@@ -6,6 +6,7 @@ import UserRoutes from "./routes/UserRoutes";
 import MyRestaurantRoutes from "./routes/MyRestaurantRoutes";
 import { v2 as cloudinary } from "cloudinary";
 import RestaurantRoutes from "./routes/RestaurantRoutes";
+import OrderRoutes from "./routes/OrderRoutes";
 
 //create app
 const app = express();
@@ -20,8 +21,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.use(express.json());
 app.use(cors());
+
+//express.raw() is a built-in middleware function in Express that parses incoming request bodies as buffers
+//In this case, { type: "*/*" } specifies that the middleware should parse all content types (*/*) as raw buffers
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
+
+app.use(express.json());
 
 //use to test the deployment success or not
 app.get("/health", async (req: Request, res: Response) => {
@@ -31,6 +37,7 @@ app.get("/health", async (req: Request, res: Response) => {
 app.use("/api/my/user", UserRoutes);
 app.use("/api/my/restaurant", MyRestaurantRoutes);
 app.use("/api/restaurant", RestaurantRoutes);
+app.use("/api/order", OrderRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
