@@ -4,7 +4,7 @@ import OrderController from "../controller/OrderController";
 
 const router = express.Router();
 
-router.post(
+router.get(
   "/",
   jwtCheck,
   jwtParse,
