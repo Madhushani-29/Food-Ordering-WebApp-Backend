@@ -77,6 +77,7 @@ const updateRestaurant = async (req: Request, res: Response) => {
     const updatedRestaurant = await Restaurant.findByIdAndUpdate(
       restaurant._id,
       restaurant,
+      //{ new: true } tells Mongoose to return the updated document
       { new: true }
     );
 

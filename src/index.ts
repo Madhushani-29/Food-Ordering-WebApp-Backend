@@ -21,8 +21,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.use(express.json());
 app.use(cors());
+
+//express.raw() is a built-in middleware function in Express that parses incoming request bodies as buffers
+//In this case, { type: "*/*" } specifies that the middleware should parse all content types (*/*) as raw buffers
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
+
+app.use(express.json());
 
 //use to test the deployment success or not
 app.get("/health", async (req: Request, res: Response) => {

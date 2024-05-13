@@ -3,19 +3,48 @@ import Stripe from "stripe";
 import Restaurant, { MenuItemType } from "../models/restaurant";
 import Order from "../models/order";
 
+// as string telling TypeScript that you're confident the value will be a string
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
 const stripeWebhookHandler = async (req: Request, res: Response) => {
+  let event;
+
   try {
-    console.log("RECEIVED EVENT");
-    console.log("==============");
-    console.log("event: ", req.body);
-    res.send();
-  } catch (error) {
+    const sig = req.headers["stripe-signature"];
+    //stripe going to verify the request come from the stripe using the webhook secret
+    //then construct an event and return a event object
+    //this end point will only word with stripe requests
+    //since if other requests comes they cannot go forward from this
+    event = STRIPE.webhooks.constructEvent(
+      req.body,
+      sig as string,
+      STRIPE_WEBHOOK_SECRET
+    );
+  } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "Error finding the user" });
+    res.status(400).send({ message: `Webhook error: ${error.message}` });
   }
+
+  if (!event) {
+    return res.status(400).send({ message: "Event is undefined" });
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const order = await Order.findById(event.data.object.metadata?.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.totalAmount = event.data.object.amount_total;
+    order.status = "paid";
+
+    await Order.findByIdAndUpdate(order._id, order, { new: true });
+  }
+
+  res.status(200).send();
 };
 
 type CheckoutSessionRequest = {
