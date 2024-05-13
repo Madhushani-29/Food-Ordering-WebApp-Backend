@@ -8,6 +8,10 @@ const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
 const stripeWebhookHandler = async (req: Request, res: Response) => {
   try {
+    console.log("RECEIVED EVENT");
+    console.log("==============");
+    console.log("event: ", req.body);
+    res.send();
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error finding the user" });
