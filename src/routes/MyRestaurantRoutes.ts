@@ -52,4 +52,11 @@ router.get(
   jwtParse,
   MyRestaurantController.getMyRestaurantOrders
 );
+
+router.patch(
+  "/order/:orderID/status",
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.updateMyRestaurantStatus
+);
 export default router;
