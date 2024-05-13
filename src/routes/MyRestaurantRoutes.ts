@@ -18,7 +18,12 @@ const upload = multer({
   },
 });
 
-router.get("/", jwtCheck, jwtParse, MyRestaurantController.getCurrentRestaurant);
+router.get(
+  "/",
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.getCurrentRestaurant
+);
 
 router.post(
   "/",
@@ -41,4 +46,10 @@ router.put(
   MyRestaurantController.updateRestaurant
 );
 
+router.get(
+  "/orders",
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.getMyRestaurantOrders
+);
 export default router;
