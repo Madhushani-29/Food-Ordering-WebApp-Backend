@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Restaurant from "../models/restaurant";
 import cloudinary from "cloudinary";
+import Order from "../models/order";
 
 const getCurrentRestaurant = async (req: Request, res: Response) => {
   try {
@@ -100,8 +101,60 @@ const uploadImage = async (file: Express.Multer.File) => {
   return uploadResponse.url;
 };
 
+const getMyRestaurantOrders = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.userID });
+    if (!restaurant) {
+      return res.status(404).json({ message: "restaurant not found" });
+    }
+
+    const orders = await Order.find({ restaurant: restaurant._id })
+      .populate("restaurant")
+      .populate("user");
+
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+const updateMyRestaurantStatus = async (req: Request, res: Response) => {
+  const { orderID } = req.params;
+  const { status } = req.body;
+  try {
+    const order = await Order.findById(orderID);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found!" }).send();
+    }
+
+    //confirm that the logged in user has the privilages to update order
+    //order own by the current user
+    const restaurant = await Restaurant.findById(order.restaurant);
+
+    //restaurant and restaurant.user both exist, _id is accessed from the user object and convert to string
+    if (restaurant?.user?._id.toString() !== req.userID) {
+      return res.status(401).send();
+    }
+
+    order.status = status;
+
+    const updatedOrder = await Order.findByIdAndUpdate(orderID, order, {
+      new: true,
+    });
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error updating status!" });
+  }
+};
+
 export default {
   createRestaurant,
   getCurrentRestaurant,
   updateRestaurant,
+  getMyRestaurantOrders,
+  updateMyRestaurantStatus,
 };
