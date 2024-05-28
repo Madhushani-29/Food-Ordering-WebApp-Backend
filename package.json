@@ -4,7 +4,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "concurrently \"nodemon\" \"yarn run stripe\"",
-    "stripe" : "stripe listen --forward-to localhost:3000/api/order/checkout/webhook",
+    "stripe" : "stripe listen --forward-to https://food-ordering-webapp-backend-9k2k.onrender.com/api/order/checkout/webhook",
     "build": "yarn && tsc",
     "start": "node dist/index.js"
   },
