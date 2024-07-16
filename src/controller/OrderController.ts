@@ -34,6 +34,60 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     //then construct an event and return a event object
     //this end point will only word with stripe requests
     //since if other requests comes they cannot go forward from this
+    
+    event = STRIPE.webhooks.constructEvent(
+      req.body,
+      sig as string,
+      STRIPE_WEBHOOK_SECRET
+    );
+  } catch (error: any) {
+    console.log(error);
+    return res.status(400).send({ message: `Webhook error: ${error.message}` });
+  }
+
+  if (!event) {
+    return res.status(400).send({ message: "Event is undefined" });
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = session.metadata?.orderId;
+
+    if (!orderId) {
+      return res.status(400).json({ message: "Order ID is missing in metadata" });
+    }
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const totalAmount = session.amount_total; // Stripe uses amount_total in cents
+
+    if (typeof totalAmount !== 'number') {
+      return res.status(400).json({ message: "Total amount is invalid" });
+    }
+
+    order.totalAmount = totalAmount;
+    order.status = "paid";
+
+    await order.save();
+  }
+
+  res.status(200).send();
+};
+
+/*
+const stripeWebhookHandler = async (req: Request, res: Response) => {
+  let event;
+
+  try {
+    const sig = req.headers["stripe-signature"];
+    //stripe going to verify the request come from the stripe using the webhook secret
+    //then construct an event and return a event object
+    //this end point will only word with stripe requests
+    //since if other requests comes they cannot go forward from this
     event = STRIPE.webhooks.constructEvent(
       req.body,
       sig as string,
@@ -63,7 +117,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
 
   res.status(200).send();
 };
-
+*/
 type CheckoutSessionRequest = {
   //array of cart items indicate by []
   cartItems: {
@@ -184,7 +238,7 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}`,
+    success_url: `${FRONTEND_URL}/success`,
     cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`,
   });
 
