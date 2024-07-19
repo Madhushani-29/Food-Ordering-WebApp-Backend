@@ -69,7 +69,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Total amount is invalid" });
     }
 
-    order.totalAmount = totalAmount;
+    order.totalAmount = event.data.object.amount_total;
     order.status = "paid";
 
     await order.save();
@@ -238,7 +238,7 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}/success`,
+    success_url: `${FRONTEND_URL}`,
     cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`,
   });
 
