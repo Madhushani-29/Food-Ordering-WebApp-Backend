@@ -238,8 +238,8 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}/order-status`,
-    cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`,
+    success_url: `${FRONTEND_URL}`,
+    cancel_url: `${FRONTEND_URL}`,
   });
 
   return sessionData;
